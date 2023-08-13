@@ -12,4 +12,6 @@ User can always see the number of bombs left to be flagged.
 
 User can restart game at any point using the "New Game" button.
 
-## Demo
+## Screen
+![minesweeper](https://github.com/LaraKinan/Minesweeper/assets/102249800/b074fdd6-bec6-4cd7-8634-f6c34eaee6f7)
+
