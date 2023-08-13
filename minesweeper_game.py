@@ -64,7 +64,6 @@ def draw_board(board: minesweepers_board, revealed, new_game_button):
     remaining_bombs_rect = remaining_bombs_text.get_rect(bottomleft=(10, screen_height - 10))
     screen.blit(remaining_bombs_text, remaining_bombs_rect)
     new_game_button.draw()
-    pygame.display.flip()
 
 def play(dim_size=10, num_bombs=10):
     global screen_running, safe, game_running
@@ -100,7 +99,7 @@ def play(dim_size=10, num_bombs=10):
 
         # Draw the board
         draw_board(board, board.dug, new_game_button)
-
+        
         # Check game over conditions
         if len(board.dug) == board.dim_size ** 2 - board.num_bombs:
             text = font.render("CONGRATULATIONS! YOU WIN!", True, BLACK)
@@ -112,9 +111,8 @@ def play(dim_size=10, num_bombs=10):
             text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
             screen.blit(text, text_rect)
             game_running = False
-
+        
         pygame.display.flip()
-
     # Quit pygame
     pygame.quit()
 
