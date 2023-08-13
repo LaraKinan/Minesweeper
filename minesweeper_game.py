@@ -26,6 +26,7 @@ def new_game(board: minesweepers_board):
 
     board.dug = set()
     board.flagged = set()
+    global safe, game_running
     safe = True
     game_running = True
 
@@ -62,31 +63,29 @@ def draw_board(board: minesweepers_board, revealed, new_game_button):
     remaining_bombs_text = remaining_bombs_font.render(f"Flags Left: {remaining_bombs}", True, RED)
     remaining_bombs_rect = remaining_bombs_text.get_rect(bottomleft=(10, screen_height - 10))
     screen.blit(remaining_bombs_text, remaining_bombs_rect)
-    new_game_button.draw()        
+    new_game_button.draw()
     pygame.display.flip()
 
 def play(dim_size=10, num_bombs=10):
-    
+    global screen_running, safe, game_running
     board = minesweepers_board(dim_size, num_bombs)
     new_game_button = Button(screen_width - 150, screen_height - 40, 140, 30, "New Game", lambda: new_game(board))
-    safe = True 
-    screen_running = True
-    game_running = True
     while screen_running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 screen_running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN and game_running:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left mouse button
                     new_game_button.handle_event(event)
-                    mouse_x, mouse_y = pygame.mouse.get_pos()
-                    clicked_row = mouse_y // CELL_SIZE
-                    clicked_col = mouse_x // CELL_SIZE
-                    safe = board.dig(clicked_row, clicked_col)
+                    if game_running:
+                        mouse_x, mouse_y = pygame.mouse.get_pos()
+                        clicked_row = mouse_y // CELL_SIZE
+                        clicked_col = mouse_x // CELL_SIZE
+                        safe = board.dig(clicked_row, clicked_col)
 
-                    if not safe:
-                        break
-                elif event.button == 3:
+                        if not safe:
+                            break
+                elif event.button == 3 and game_running:
                     mouse_x, mouse_y = pygame.mouse.get_pos()
                     clicked_row = mouse_y // CELL_SIZE
                     clicked_col = mouse_x // CELL_SIZE
@@ -147,4 +146,9 @@ flag_image = pygame.image.load('flag_image.png')
 
 # Font for the remaining bombs display
 remaining_bombs_font = pygame.font.Font(None, 24)
+
+# Initialize global values
+safe = True 
+screen_running = True
+game_running = True
 play()
