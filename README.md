@@ -4,7 +4,7 @@ This is the classic minesweeper game implemented in python and using pygame for 
 The game starts a 10x10 board with 10 bombs distributed randomly and 10 flags to be planted, the game is started with the command line "python3 minesweeper_game.py".
 
 
-### How to play
+### How to Play
 Minesweeper is a single-player logic-based computer game with the objective of locating a predetermined number of bombs placed around the board in cells. 
 
 For each cell that does not hold a bomb, a number is placed, this number represents the number of bombs neighboring the cell, where "neighboring" is defined as cells that share the same border on one of the four sides of the cell or share the same corner, meaning each cell can have at most 8 neighbors: Two horizontal neighbors (left and right), two vertical neighbors (top and bottom) and four diagonal neighbors (top left, top right, bottom left, bottom right).
