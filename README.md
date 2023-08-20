@@ -32,4 +32,14 @@ User can restart game at any point using the "New Game" button.
 
 ## Screen
 The dark gray cells represents revealed (dug) cells which have no neighboring bombs, white cells are revealed (dug) cells and light gray cells are unrevealed (undug).
-![minesweeper](https://github.com/LaraKinan/Minesweeper/assets/102249800/b074fdd6-bec6-4cd7-8634-f6c34eaee6f7)
+
+![minesweeper](https://github.com/LaraKinan/Minesweeper/assets/102249800/df20ea47-6395-4a61-9cf4-26d4bf6ec3be)
+
+## Dependencies
+- Python 3.10
+- Pygame 2.4
+
+## How to Run
+```
+python minesweeper_game.py
+```
