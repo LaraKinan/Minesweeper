@@ -1,24 +1,8 @@
 from minesweeper_class import minesweepers_board
+from button_class import Button
+from colors import *
 import pygame
-
-class Button:
-    def __init__(self, x, y, width, height, text, callback):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.color = GRAY
-        self.text = text
-        self.callback = callback
-
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if self.rect.collidepoint(event.pos):
-                self.callback()
-
-    def draw(self):
-        pygame.draw.rect(screen, self.color, self.rect)
-        text_surf = font.render(self.text, True, BLACK)
-        text_rect = text_surf.get_rect(center=self.rect.center)
-        screen.blit(text_surf, text_rect)
-
+        
 def new_game(board: minesweepers_board):
     # initialize board
     board.board = board.init_board()
@@ -40,30 +24,43 @@ def draw_board(board: minesweepers_board, revealed, new_game_button):
                     pygame.draw.rect(screen, DARK_GRAY, cell_rect)
                 elif board.board[row][col] == '*':
                     # Resize the bomb image to fit the cell
+                    pygame.draw.rect(screen, GRAY, cell_rect)
                     resized_bomb_image = pygame.transform.scale(bomb_image, (CELL_SIZE, CELL_SIZE))
                     screen.blit(resized_bomb_image, cell_rect)  # Draw the resized bomb image
                 else:
-                    pygame.draw.rect(screen, WHITE, cell_rect)
+                    pygame.draw.rect(screen, DARK_GRAY, cell_rect)
                     cell_value = str(board.board[row][col])
-                    text_color = RED if cell_value == '*' else BLUE
+                    text_color = RED if cell_value == '*' else get_color(board.board[row][col])
                     text = font.render(cell_value, True, text_color)
                     text_rect = text.get_rect(center=cell_rect.center)
                     screen.blit(text, text_rect)
             elif (row, col) in board.flagged:
                 # Draw flag image on flagged cells
+                pygame.draw.rect(screen, GRAY, cell_rect)
                 resized_flag_image = pygame.transform.scale(flag_image, (CELL_SIZE, CELL_SIZE))
                 screen.blit(resized_flag_image, cell_rect)
             else:
                 pygame.draw.rect(screen, GRAY, cell_rect)
             
             # Draw cell borders
-            pygame.draw.rect(screen, BLACK, cell_rect, BORDER_SIZE)
+            pygame.draw.rect(screen, (128, 128, 128), cell_rect, BORDER_SIZE)
+
+            if not (row, col) in revealed: # This is to add a 3D element to the cells
+                
+                # Draw darker borders for right and bottom
+                pygame.draw.line(screen, DARK_GRAY, (cell_rect.bottomleft[0] + 1, cell_rect.bottomleft[1] - 1), (cell_rect.bottomright[0], cell_rect.bottomright[1] - 1), BORDER_SIZE)
+                pygame.draw.line(screen, DARK_GRAY, (cell_rect.bottomright[0] - 1, cell_rect.bottomright[1] - 1), (cell_rect.topright[0] - 1, cell_rect.topright[1] - 1), BORDER_SIZE)
+                
+                # Draw lighter borders for top and left
+                pygame.draw.line(screen, WHITE, (cell_rect.topleft[0] + 1, cell_rect.topleft[1] + 1), (cell_rect.topright[0] + 1, cell_rect.topright[1] + 1), BORDER_SIZE)
+                pygame.draw.line(screen, WHITE, (cell_rect.topleft[0] + 1, cell_rect.topleft[1]), (cell_rect.bottomleft[0] + 1, cell_rect.bottomleft[1] - 1), BORDER_SIZE)
+
     # Draw the remaining bombs display
     remaining_bombs = board.num_bombs - len(board.flagged)
     remaining_bombs_text = remaining_bombs_font.render(f"Flags Left: {remaining_bombs}", True, RED)
     remaining_bombs_rect = remaining_bombs_text.get_rect(bottomleft=(10, screen_height - 10))
     screen.blit(remaining_bombs_text, remaining_bombs_rect)
-    new_game_button.draw()
+    new_game_button.draw(screen, font)
 
 def play(dim_size=10, num_bombs=10):
     global screen_running, safe, game_running
@@ -120,7 +117,8 @@ def play(dim_size=10, num_bombs=10):
 pygame.init()
 
 # Set up the game window
-DIM_SIZE = 10
+DIM_SIZE = 20
+NUM_BOMBS = DIM_SIZE * 3
 WIDTH, HEIGHT = 600, 600
 screen_width, screen_height = WIDTH, 650
 CELL_SIZE = WIDTH // DIM_SIZE
@@ -129,13 +127,6 @@ BORDER_SIZE = 2  # Define the border size
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Minesweeper")
 
-# Colors
-WHITE = (255, 255, 255)
-GRAY = (200, 200, 200)
-DARK_GRAY = (100, 100, 100)
-BLACK = (0, 0, 0)
-BLUE = (0, 0, 255)
-RED = (255, 0, 0)
 font = pygame.font.Font(None, 36)
 
 # Load the bomb and flag images
@@ -149,4 +140,4 @@ remaining_bombs_font = pygame.font.Font(None, 24)
 safe = True 
 screen_running = True
 game_running = True
-play()
+play(DIM_SIZE, NUM_BOMBS)
